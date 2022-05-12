@@ -6,10 +6,14 @@ import 'package:get_radiko_hash_tags/scraping/scraping_detail.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
+import 'get_hash_tags.dart';
+
 typedef HashTags = Map<String, List<List<String>>>;
 
 class ScrapingPage extends StatefulWidget {
-  const ScrapingPage({Key? key}) : super(key: key);
+  ScrapingPage({Key? key}) : super(key: key);
+
+  bool isLoading = false;
 
   @override
   State<ScrapingPage> createState() => _ScrapingPageState();
@@ -24,7 +28,11 @@ class _ScrapingPageState extends State<ScrapingPage> {
       appBar: AppBar(
         title: const Text('radiko page'),
       ),
-      body: ListView.builder(
+      body: widget.isLoading
+        ? const Center(child: CircularProgressIndicator())
+
+
+      : ListView.builder(
         itemBuilder: (context, index) {
           String key = programList.keys.elementAt(index);
           return ListTile(
@@ -40,10 +48,15 @@ class _ScrapingPageState extends State<ScrapingPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          setState(() {
+            widget.isLoading = !widget.isLoading;
+          });
           final newpProgramList = await scraping();
           setState(() {
+            widget.isLoading = !widget.isLoading;
             programList = newpProgramList;
           });
+          print('finish');
         },
         child: const Icon(Icons.search),
       ),
@@ -52,6 +65,7 @@ class _ScrapingPageState extends State<ScrapingPage> {
 }
 
 Future<HashTags> scraping() async {
+  print('scraping start');
   const String url = 'https://radiko.jp/index/';
   final target = Uri.parse(url);
   final response = await http.get(target);
@@ -60,13 +74,14 @@ Future<HashTags> scraping() async {
     Exception(response.statusCode.toString());
   }
   final document = parse(responseBody);
-  HashTags hashTagsList = normalization(document);
+  HashTags hashTagsList =  await normalization(document);
   return hashTagsList;
 }
 
-HashTags normalization(document) {
+Future<HashTags> normalization(document) async {
+  print('normalization start');
   final HashTags hashTags = {};
-  for (int i = 1; i <= 15; i += 2) {
+  for (int i = 1; i < 3; i += 2) {
     final String result = document
             .querySelector(
                 '#content > div.content.content__main > div > div > div:nth-child($i)')
@@ -89,8 +104,9 @@ HashTags normalization(document) {
 
     hashTags[localTitle] = [];
     for (int j = 0; j < url.length; j++) {
+      final List<String> hashTagsList = await getHashTags(url[j]);
       hashTags[localTitle]?.addAll([
-        [url[j], programTitle[j]]
+        [programTitle[j]] + hashTagsList
       ]);
     }
   }

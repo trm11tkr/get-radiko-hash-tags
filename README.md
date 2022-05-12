@@ -2,15 +2,10 @@
 
 This project will retrieve program hashtags from the radiko website.
 
-## Getting Started
+- 北海道〜沖縄までのラジオ局名を取得
+- 1日のラジオ番組全てのハッシュタグを取得(全てのラジオ局で行う)
 
-This project is a starting point for a Flutter application.
+以下のデモ動画では、取得時間の問題から北海道・東北に対してのみリクエストを投げている(３０秒近くはローディングなので改善必須)
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+https://user-images.githubusercontent.com/89247188/168004700-571fb1e4-4d92-4059-93d1-39881d53152d.mp4

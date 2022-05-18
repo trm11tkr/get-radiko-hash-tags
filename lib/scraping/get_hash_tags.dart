@@ -19,20 +19,9 @@ Future<List<String>> getHashTags(String programUrl) async {
       '情報なし';
 
   final regHashTags1 = RegExp(r'(?<=「#).+?(?=」</a>)'); // HBC
-  // final regHashTags2 = RegExp(r'#.+?(?=<br>T)');
-  // final regHashTags3 = RegExp(r'(?<=twitterハッシュタグは「).+?(?=」<br>t)');
-
 
   final List<String> hashTags1 =
       regHashTags1.allMatches(result).map((e) => e.group(0).toString()).toSet().toList();
 
-  // final List<String> hashTags2 =
-  // regHashTags2.allMatches(result).map((e) => e.group(0).toString()).toSet().toList();
-  //
-  // final List<String> hashTags3 =
-  // regHashTags3.allMatches(result).map((e) => e.group(0).toString()).toSet().toList();
-
-  print('return hashTagList');
   return hashTags1;
-  // return hashTags1 + hashTags2 + hashTags3;
 }
